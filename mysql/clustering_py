@@ -1,0 +1,25 @@
+curl \
+  -X GET https://xyz-example.eu-central.aws.cloud.qdrant.io:6333 \
+  --header 'api-key: <your-api-key>'
+
+# Alternatively, you can use the `Authorization` header with the `Bearer` prefix
+curl \
+  -X GET https://xyz-example.eu-central.aws.cloud.qdrant.io:6333 \
+  --header 'Authorization: Bearer <your-api-key>'
+
+  auto-generated-api-key
+
+API Key
+
+*******w7MONT7Q
+
+Status
+
+Active
+Created by
+
+okesthers@byui.edu
+
+Created at
+
+Oct 28, 2025, 10:55 AM (UTC-06:00)

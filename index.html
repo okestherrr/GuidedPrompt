@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Esther's AI Scripture Companion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Alata&family=ABeeZee&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      background: url('hero.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+    }
+    .chat-box {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 1rem;
+      border-radius: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">EstherAI</div>
+    <nav>
+      <a href="library.html" class="library">Library</a>
+      <a href="extras.html" class="extras">Extras</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1><span class="gradient-text">Guided Prompt AI</span></h1>
+    <p class="subtext">Unlock spiritual insight. Let EstherAI guide your prompt into divine direction.</p>
+    <a class="cta-button" href="#">Try EstherAI today</a>
+
+    <section class="chat-ai">
+      <h2>Ask EstherAI</h2>
+      <div class="chat-container">
+        <div class="chat-box" id="chat-box">
+          <!-- Chat messages will appear here -->
+        </div>
+        <input type="text" id="chat-input" class="chat-input-large" placeholder="Ask about a scripture topic..." />
+        <button id="chat-submit">Send</button>
+      </div>
+    </section>
+
+    <div class="glow-icons">
+      <div class="icon glow">✒️</div>
+      <div class="icon glow">📷</div>
+      <div class="icon glow">📖</div>
+      <div class="icon glow">📝</div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Esther Scott-Richards</p>
+  </footer>
+
+</body>
+<script>
+  document.getElementById('chat-submit').addEventListener('click', async function () {
+    const input = document.getElementById('chat-input').value;
+    const chatBox = document.getElementById('chat-box');
+    if (input.trim()) {
+      const userMessage = document.createElement('div');
+      userMessage.textContent = "You: " + input;
+      chatBox.appendChild(userMessage);
+
+      const loadingMessage = document.createElement('div');
+      loadingMessage.textContent = "EstherAI is thinking...";
+      chatBox.appendChild(loadingMessage);
+
+      try {
+        const response = await fetch('http://localhost:3000/ask', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: input })
+        });
+
+        const data = await response.json();
+        console.log(data);
+        loadingMessage.remove();
+
+        const aiResponse = document.createElement('div');
+        aiResponse.textContent = "EstherAI: " + data.reply;
+        chatBox.appendChild(aiResponse);
+      } catch (error) {
+        loadingMessage.textContent = "Sorry, something went wrong.";
+      }
+
+      document.getElementById('chat-input').value = '';
+    }
+  });
+</script>
+</html>
