@@ -6,15 +6,19 @@ import importlib
 import streamlit as st
 
 # Ensure repo root is on sys.path so GuidedPrompt package can be imported
-REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+GUIDEDPROMPT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if REPO_ROOT not in sys.path:
     sys.path.insert(0, REPO_ROOT)
+if GUIDEDPROMPT_ROOT not in sys.path:
+    sys.path.insert(0, GUIDEDPROMPT_ROOT)
 
 # Remove any relative paths that might interfere
 sys.path = [p for p in sys.path if not p.startswith('.')]
 
 # Debug: print paths
 print(f"REPO_ROOT: {REPO_ROOT}")
+print(f"GUIDEDPROMPT_ROOT: {GUIDEDPROMPT_ROOT}")
 print(f"sys.path cleaned: {[p for p in sys.path[:5]]}")
 
 DB_MODULE = "GuidedPrompt.mysql.connection"
@@ -22,30 +26,38 @@ DB_MODULE = "GuidedPrompt.mysql.connection"
 # Try importing directly with absolute path
 try:
     import importlib.util
-    connection_path = os.path.join(REPO_ROOT, "GuidedPrompt", "mysql", "connection.py")
+    connection_path = os.path.join(GUIDEDPROMPT_ROOT, "mysql", "connection.py")
+    print(f"Trying to load connection from: {connection_path}")
+    print(f"File exists: {os.path.exists(connection_path)}")
     spec = importlib.util.spec_from_file_location("connection_module", connection_path)
     db_module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(db_module)
     DB_IMPORT_SUCCESS = True
+    print("✅ Connection module loaded successfully!")
 except Exception as e:
     DB_IMPORT_SUCCESS = False
-    st.error(f"❌ Direct import failed: {e}")
+    print(f" Connection import has failed: {e}")
+    st.error(f" Direct import has failed: {e}")
 
 # Import AI integration
 try:
     if DB_IMPORT_SUCCESS:
         # Try to import the AI integration using the same direct approach
-        ai_path = os.path.join(REPO_ROOT, "GuidedPrompt", "mysql", "AI_intergration.py")
+        ai_path = os.path.join(GUIDEDPROMPT_ROOT, "mysql", "AI_intergration.py")
+        print(f"Trying to load AI integration from: {ai_path}")
+        print(f"AI file exists: {os.path.exists(ai_path)}")
         ai_spec = importlib.util.spec_from_file_location("ai_module", ai_path)
         ai_module = importlib.util.module_from_spec(ai_spec)
         ai_spec.loader.exec_module(ai_module)
         generate_summary = ai_module.generate_summary
         AI_AVAILABLE = True
+        print("✅ AI module loaded successfully!")
     else:
         raise ImportError("DB module not available")
 except ImportError as e:
     AI_AVAILABLE = False
-    st.error(f"❌ AI integration failed: {e}")
+    print(f"AI integration has failed: {e}")
+    st.error(f" AI integration has failed: {e}")
 
 st.title("GuidedPrompt ")
 
@@ -66,10 +78,10 @@ if st.button("Find verses"):
                 # Use the directly imported module
                 db = db_module
             else:
-                st.error("❌ DB module not available")
+                st.error("DB module is not available")
                 st.stop()
         except Exception as e:
-            st.error(f"❌ Could not use DB module: {e}")
+            st.error(f"Could not use DB module: {e}")
             st.stop()
         else:
             # Prefer server-side structured search if available
