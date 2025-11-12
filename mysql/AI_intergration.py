@@ -43,17 +43,19 @@ def generate_summary(search_query: str, verses: List[Dict[str, str]]) -> str:
     
     INSTRUCTIONS FOR YOUR RESPONSE:
     - Focus on the key themes, doctrines, and insights that emerge from these scriptures
-    - Keep the summary concise but meaningful (1-2 paragraphs)
-    - Write in a warm, simple inspirational tone that helps people understand spiritual concepts
+    - Keep the summary concise but meaningful (1 paragraphs)
+    - Write in a warm, Uplifting, simple inspirational tone that helps people understand spiritual concepts
     - Include specific references to the verses from the scripture database when making points
     - Connect the teachings to practical daily life applications and how it could be applied
     - If there are different perspectives across scriptures, acknowledge them
     - End with an encouraging thought about how these teachings can help someone
     
     Format your response as:
-    1. Main Theme: [one sentence summary] make it simple for a 11th grader to understand
-    2. Key Insights: [detailed paragraph]
-    3. Personal Application: [how to apply these teachings]
+    1. Make a though provoking question related to the search topic. phrase it simply as if to a teenager
+    2. Main Theme: [one sentence summary] make it simple for a 11th grader to understand
+    3. Personal Application: [how to apply these teachings in daily life in simple language as ifif talking to a teenager]
+    4. World Application: [how to apply these teachings to the events happening in the world and how the teachings relate to current news events to daily life.]
+    5. Key Insights: [detailed paragraph in simple lanaguage with fun facts about the scriptures, 4 sentences at most ]
     """
     
     try:
@@ -91,13 +93,13 @@ def generate_simple_summary(search_query: str, verse_count: int) -> str:
             try:
                 model = genai.GenerativeModel(model_name)
                 prompt = f"""Provide a brief, uplifting explanation of what the scriptures teach about '{search_query}'. 
-                Keep it to 1-2 sentences and focus on practical application for daily life."""
+                Keep it to 1-2 sentences and focus on practical application for daily life. and how the things going on in the news world today relate to this topic. Also, mention that {verse_count} verses were found on this topic."""
                 response = model.generate_content(prompt)
                 return response.text
             except Exception as model_error:
                 continue  # Try next model
         
-        return "Error: Could not find a working model for simple summary."
+        return "Error: Could not find a model for simple summary."
         
     except Exception as e:
         return f"Error generating summary: {str(e)}"
